@@ -190,7 +190,7 @@ function startup() {
                     console.log(err);
                 } else {
                     console.table(results);
-                    menu();
+                    startup();
                 }
             });
         } else if (answers.selection === 'Add Employee') {
