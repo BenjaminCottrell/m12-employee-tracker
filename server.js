@@ -32,7 +32,7 @@ function employee() {
             name: 'last_name'
         },
         {
-            type: 'list',
+            type: 'input',
             message: 'What is the employee\'s role id? 1 for Marketing Director, 2 for Marketing Manager, 3 for Senior Engineer, 4 for Junior Engineer, and 5 for HR Manager',
             name: 'role_id'
         },
