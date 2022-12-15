@@ -44,7 +44,7 @@ function employee() {
 }
 
 
-function role() {
+function roles() {
     inquirer.prompt ([
         {
             type: 'input',
@@ -95,7 +95,7 @@ function menu() {
         console.log(answers);
 
         if (answers.selection === 'View All Employees') {
-            db.query('Select * FROM employee', function (err, results) {
+            db.query('SELECT employee.id, employee.first_name, employee.last_name, title, name AS department, roles.salary FROM employee JOIN roles ON employee.role_id = roles.id JOIN department ON roles.department_id = department.id', function (err, results) {
                 if (err) {
                     console.log(err);
                 } else {
