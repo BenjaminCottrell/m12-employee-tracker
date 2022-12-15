@@ -2,7 +2,7 @@ const inquirer = require('inquirer');
 const mysql = require('mysql2');
 const consoleTable = require('console.table');
 
-// Connect to 
+// Connection
 const db = mysql.createConnection(
     {
         user: 'root',
@@ -13,6 +13,12 @@ const db = mysql.createConnection(
     console.log('Connected to the employee_db.')
 );
 
+// start running
+function init() {
+    startup();
+}
+
+// add a new employee
 function employee() {
     inquirer.prompt([
         {
@@ -37,13 +43,13 @@ function employee() {
                     console.log(err);
                 } else {
                     console.log(`First Name: ${answers.first_name} Last Name: ${answers.last_name} Role ID: ${answers.role_id}`);
-                    menu();
+                    startup();
                 }
             });
         })
 }
 
-
+// add a new role
 function roles() {
     inquirer.prompt ([
         {
@@ -68,14 +74,34 @@ function roles() {
                 console.log(err);
             } else {
                 console.log(`Title: ${answers.title}, Salary: ${answers.salary}, Department: ${answers.department_id}`);
-                menu();
+                startup();
             }
         });
     });
 }
 
+// Add a new department
+function department() {
+    inquirer.prompt ([
+        {
+            type: 'input',
+            message: 'What is the name of the department?',
+            name: 'name'
+        }
+    ]).then(answers => {
+        db.query('INSERT INTO department SET ?', answers, function (err, results) {
+            if (err) {
+                console.log(err);
+            } else {
+                console.log(`Name: ${answers.name}`);
+                startup();
+            }
+        });
+    });
+}
 
-function menu() {
+// serves the menu
+function startup() {
     inquirer.prompt([
         {
             type: 'list',
@@ -100,10 +126,26 @@ function menu() {
                     console.log(err);
                 } else {
                     console.table(results);
+                    startup();
                 }
             });
+        } else if (answers.selection === 'View All Roles') {
+            db.query('Select title FROM roles', function (err, results) {
+                if (err) {
+                    console.log(err);
+                } else {
+                    console.table(results);
+                    startup();
+                }
+            });    
+        } else if (answers.selection === 'Add Employee') {
+            employee();
+        } else if (answers.selection === 'Add Role') {
+            roles();
+        } else if (answers.selection === 'Add Department') {
+            department();
+        } else if (answers.selection === 'Update Employee Role') {
         }
     });
 }
-
-menu();
+init();
