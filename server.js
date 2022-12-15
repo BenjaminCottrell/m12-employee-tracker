@@ -43,6 +43,38 @@ function employee() {
         })
 }
 
+
+function role() {
+    inquirer.prompt ([
+        {
+            type: 'input',
+            message: 'What is the role name?',
+            name: 'title'
+        },
+        {
+            type: 'input',
+            message: 'What is the employee\'s salary?',
+            name: 'salary'
+        },
+        {
+            type: 'input',
+            message: 'Enter a number corresponding to a department. 1 for Marketing, 2 for Engineering or 3 for Human Resources.',
+            name: 'department_id'
+        },
+    ]).then(answers => {
+        // Query to add a new role to DB using the values from Inquirer prompt
+        db.query('INSERT INTO roles SET ?', answers, function (err, results) {
+            if (err) {
+                console.log(err);
+            } else {
+                console.log(`Title: ${answers.title}, Salary: ${answers.salary}, Department: ${answers.department_id}`);
+                menu();
+            }
+        });
+    });
+}
+
+
 function menu() {
     inquirer.prompt([
         {
