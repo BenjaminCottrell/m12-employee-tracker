@@ -80,6 +80,23 @@ function roles() {
     });
 }
 
+function updateRoleQuestions(rolesArray, employeesArray) {
+    return [
+        {
+            name: 'name',
+            type: 'list',
+            message: 'What is the employees name?',
+            choices: employeesArray
+        },
+        {
+            name: 'role',
+            type: 'list',
+            message: 'What is the employees new role?',
+            choices: rolesArray
+        },
+    ];
+};
+
 // update role
 function updateRole() {
     var rolesArray = [];
@@ -88,14 +105,14 @@ function updateRole() {
         for (i = 0; i < results.length; i++) {
             rolesArray.push(results[i].title);
         }
-        db.query(`select concat(first_name, ' ', last_name) as employee from employee`, (err, results) => {
+        db.query(`SELECT concat(first_name, ' ', last_name) AS employee FROM employee`, (err, results) => {
             for (i = 0; i < results.length; i++) {
                 employeesArray.push(results[i].employee);
             }
             inquirer
-                .prompt(updateEmpRoleQuest(rolesArray, employeesArray))
+                .prompt(updateRoleQuestions(rolesArray, employeesArray))
                 .then((response) => {
-                    db.query(`select id from role where title = ?`, response.role, function (err, results) {
+                    db.query(`SELECT id FROM role WHERE title = ?`, response.role, function (err, results) {
                         var roleId = results[0].id;
                         console.log(roleId)
                         db.query(`UPDATE employee SET role_id = ? WHERE concat(first_name, ' ', last_name) = ?;`, [roleId, response.name], function (err, results) {
