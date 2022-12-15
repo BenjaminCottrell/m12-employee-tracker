@@ -51,7 +51,7 @@ function employee() {
 
 // add a new role
 function roles() {
-    inquirer.prompt ([
+    inquirer.prompt([
         {
             type: 'input',
             message: 'What is the role name?',
@@ -82,7 +82,7 @@ function roles() {
 
 // Add a new department
 function department() {
-    inquirer.prompt ([
+    inquirer.prompt([
         {
             type: 'input',
             message: 'What is the name of the department?',
@@ -137,7 +137,7 @@ function startup() {
                     console.table(results);
                     startup();
                 }
-            });    
+            });
         } else if (answers.selection === 'Add Employee') {
             employee();
         } else if (answers.selection === 'Add Role') {
