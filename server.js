@@ -80,6 +80,35 @@ function roles() {
     });
 }
 
+// update role
+function updateRole() {
+    var rolesArray = [];
+    var employeesArray = [];
+    db.query('SELECT title FROM role', (err, results) => {
+        for (i = 0; i < results.length; i++) {
+            rolesArray.push(results[i].title);
+        }
+        db.query(`select concat(first_name, ' ', last_name) as employee from employee`, (err, results) => {
+            for (i = 0; i < results.length; i++) {
+                employeesArray.push(results[i].employee);
+            }
+            inquirer
+                .prompt(updateEmpRoleQuest(rolesArray, employeesArray))
+                .then((response) => {
+                    db.query(`select id from role where title = ?`, response.role, function (err, results) {
+                        var roleId = results[0].id;
+                        console.log(roleId)
+                        db.query(`UPDATE employee SET role_id = ? WHERE concat(first_name, ' ', last_name) = ?;`, [roleId, response.name], function (err, results) {
+                            console.log(`\n Employee Role Updated \n`);
+                            init();
+                        })
+                    })
+                })
+
+        });
+    });
+}
+
 // Add a new department
 function department() {
     inquirer.prompt([
@@ -138,6 +167,15 @@ function startup() {
                     startup();
                 }
             });
+        } else if (answers.selection === 'View All Departments') {
+            db.query('Select name FROM department', function (err, results) {
+                if (err) {
+                    console.log(err);
+                } else {
+                    console.table(results);
+                    menu();
+                }
+            });
         } else if (answers.selection === 'Add Employee') {
             employee();
         } else if (answers.selection === 'Add Role') {
@@ -145,6 +183,7 @@ function startup() {
         } else if (answers.selection === 'Add Department') {
             department();
         } else if (answers.selection === 'Update Employee Role') {
+            updateRole();
         }
     });
 }
